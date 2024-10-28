@@ -1,0 +1,45 @@
+.wbs-diagram {
+    position: relative;
+    overflow: auto;
+  }
+  
+  /* Style untuk box */
+  .wbs-box {
+    position: relative;
+    z-index: 20;
+    background: white;
+    transition: all 0.2s;
+  }
+  
+  .wbs-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style untuk connector lines */
+  .connector {
+    position: absolute;
+    background: black;
+    z-index: 10;
+  }
+  
+  .connector-vertical {
+    width: 2px;
+  }
+  
+  .connector-horizontal {
+    height: 2px;
+  }
+  
+  /* Shadow untuk box */
+  .box-shadow {
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Grid untuk level 2 dan 3 */
+  .level-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+  Last edited 19
