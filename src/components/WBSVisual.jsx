@@ -523,13 +523,13 @@ const ViewSelector = ({ currentView, setCurrentView }) => {
       >
         <GitBranch size={20} />
       </button>
-      <button
+      {/* <button
         onClick={() => setCurrentView('gantt')}
         className={`p-2 rounded ${currentView === 'gantt' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
         title="Gantt Chart"
       >
         <Calendar size={20} />
-      </button>
+      </button> */}
     </div>
   );
 };
