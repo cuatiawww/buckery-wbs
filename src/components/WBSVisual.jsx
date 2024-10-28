@@ -1,8 +1,272 @@
+/* eslint-disable react/jsx-no-undef */
+/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { ChevronRight, MinusSquare, PlusSquare, List, LayoutGrid, GitBranch } from 'lucide-react';
+import { ChevronRight, MinusSquare, PlusSquare, List, LayoutGrid, GitBranch, Calendar } from 'lucide-react';
 import { wbsData } from '../data/wbsData';
+
+const GanttChart = () => {
+  // Data untuk timeline (September Week 3 - February Week 1)
+  const months = ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
+  const weeks = [
+    'Sep W3', 'Sep W4',
+    'Oct W1', 'Oct W2', 'Oct W3', 'Oct W4',
+    'Nov W1', 'Nov W2', 'Nov W3', 'Nov W4',
+    'Dec W1', 'Dec W2', 'Dec W3', 'Dec W4',
+    'Jan W1', 'Jan W2', 'Jan W3', 'Jan W4',
+    'Feb W1'
+  ];
+
+  // Data tasks dengan timeline disesuaikan
+  const tasks = [
+    // PROJECT INITIATION (2 minggu)
+    {
+      id: '1.0',
+      name: 'PROJECT INITIATION',
+      start: 0, // Start at Sep W3
+      duration: 2,
+      level: 1,
+      color: 'bg-blue-500'
+    },
+    {
+      id: '1.1',
+      name: 'Project Charter Creation',
+      start: 0,
+      duration: 1,
+      level: 2,
+      color: 'bg-blue-400'
+    },
+    {
+      id: '1.2',
+      name: 'Stakeholder Management',
+      start: 0,
+      duration: 2,
+      level: 2,
+      color: 'bg-blue-400'
+    },
+
+    // REQUIREMENT ANALYSIS (3 minggu)
+    {
+      id: '2.0',
+      name: 'REQUIREMENT ANALYSIS',
+      start: 2, // Start after Project Initiation
+      duration: 3,
+      level: 1,
+      color: 'bg-purple-500'
+    },
+    {
+      id: '2.1',
+      name: 'Functional Specification',
+      start: 2,
+      duration: 2,
+      level: 2,
+      color: 'bg-purple-400'
+    },
+    {
+      id: '2.2',
+      name: 'System Analysis',
+      start: 3,
+      duration: 2,
+      level: 2,
+      color: 'bg-purple-400'
+    },
+
+    // SYSTEM DESIGN (4 minggu)
+    {
+      id: '3.0',
+      name: 'SYSTEM DESIGN',
+      start: 5, // Start after Requirement Analysis
+      duration: 4,
+      level: 1,
+      color: 'bg-green-500'
+    },
+    {
+      id: '3.1',
+      name: 'Visual Design System',
+      start: 5,
+      duration: 2,
+      level: 2,
+      color: 'bg-green-400'
+    },
+    {
+      id: '3.2',
+      name: 'User Interface Design',
+      start: 6,
+      duration: 3,
+      level: 2,
+      color: 'bg-green-400'
+    },
+
+    // DEVELOPMENT (6 minggu)
+    {
+      id: '4.0',
+      name: 'DEVELOPMENT',
+      start: 9, // Start after System Design
+      duration: 6,
+      level: 1,
+      color: 'bg-orange-500'
+    },
+    {
+      id: '4.1',
+      name: 'Backend Development',
+      start: 9,
+      duration: 4,
+      level: 2,
+      color: 'bg-orange-400'
+    },
+    {
+      id: '4.2',
+      name: 'Frontend Development',
+      start: 11,
+      duration: 4,
+      level: 2,
+      color: 'bg-orange-400'
+    },
+
+    // TESTING (3 minggu)
+    {
+      id: '5.0',
+      name: 'TESTING',
+      start: 15, // Start after Development
+      duration: 3,
+      level: 1,
+      color: 'bg-pink-500'
+    },
+    {
+      id: '5.1',
+      name: 'Unit Testing',
+      start: 15,
+      duration: 2,
+      level: 2,
+      color: 'bg-pink-400'
+    },
+    {
+      id: '5.2',
+      name: 'Integration Testing',
+      start: 16,
+      duration: 2,
+      level: 2,
+      color: 'bg-pink-400'
+    },
+
+    // DEPLOYMENT (2 minggu)
+    {
+      id: '6.0',
+      name: 'DEPLOYMENT',
+      start: 17, // Overlap with end of Testing
+      duration: 2,
+      level: 1,
+      color: 'bg-teal-500'
+    },
+    {
+      id: '6.1',
+      name: 'Environment Setup',
+      start: 17,
+      duration: 1,
+      level: 2,
+      color: 'bg-teal-400'
+    },
+    {
+      id: '6.2',
+      name: 'Deployment Process',
+      start: 18,
+      duration: 1,
+      level: 2,
+      color: 'bg-teal-400'
+    },
+
+    // MAINTENANCE (Start at end and continue)
+    {
+      id: '7.0',
+      name: 'MAINTENANCE',
+      start: 18, // Start at the end
+      duration: 1,
+      level: 1,
+      color: 'bg-indigo-500'
+    },
+    {
+      id: '7.1',
+      name: 'Regular Maintenance',
+      start: 18,
+      duration: 1,
+      level: 2,
+      color: 'bg-indigo-400'
+    }
+  ];
+
+  return (
+    <div className="p-8 bg-white rounded-lg shadow-lg overflow-x-auto">
+      <div className="min-w-[1200px]">
+        <div className="flex">
+          {/* Task names column */}
+          <div className="w-64 flex-shrink-0">
+            <div className="h-16 border-b-2 border-gray-200 font-bold">Task Name</div>
+            {tasks.map((task) => (
+              <div
+                key={task.id}
+                className="h-12 flex items-center"
+                style={{ paddingLeft: `${task.level * 16}px` }}
+              >
+                {task.name}
+              </div>
+            ))}
+          </div>
+
+          {/* Timeline */}
+          <div className="flex-grow">
+            <div className="flex border-b-2 border-gray-200">
+              {/* Months */}
+              {months.map((month, idx) => (
+                <div
+                  key={month}
+                  className="flex-auto h-8 border-r border-gray-200 font-bold text-center"
+                  style={{
+                    width: month === 'Sep' ? '42px' : // 2 weeks
+                           month === 'Feb' ? '24px' : // 1 week
+                           '136px' // 4 weeks
+                  }}
+                >
+                  {month}
+                </div>
+              ))}
+            </div>
+            <div className="flex border-b-2 border-gray-200">
+              {/* Weeks */}
+              {weeks.map((week, index) => (
+                <div
+                  key={index}
+                  className="w-12 h-8 border-r border-gray-200 text-xs text-center"
+                >
+                  W{week.split(' ')[1].replace('W', '')}
+                </div>
+              ))}
+            </div>
+
+            {/* Tasks bars */}
+            {tasks.map((task) => (
+              <div key={task.id} className="h-12 relative">
+                <div
+                  className={`absolute h-6 mt-3 rounded-full ${task.color} hover:opacity-90 cursor-pointer transition-opacity duration-200`}
+                  style={{
+                    left: `${task.start * 32}px`,
+                    width: `${task.duration * 48}px`
+                  }}
+                  title={`${task.name} (${task.duration} weeks)`}
+                >
+                  <div className="h-full flex items-center justify-center text-white text-xs font-medium">
+                    {task.duration}w
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 
 // Task List Component
 const TaskList = ({ tasks, marginLeft }) => {
@@ -234,6 +498,7 @@ const DiagramView = () => {
   );
 };
 // View Selector Component
+// Di ViewSelector, tambahkan button untuk Gantt Chart
 const ViewSelector = ({ currentView, setCurrentView }) => {
   return (
     <div className="flex gap-2 mb-4">
@@ -257,6 +522,13 @@ const ViewSelector = ({ currentView, setCurrentView }) => {
         title="Diagram View"
       >
         <GitBranch size={20} />
+      </button>
+      <button
+        onClick={() => setCurrentView('gantt')}
+        className={`p-2 rounded ${currentView === 'gantt' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        title="Gantt Chart"
+      >
+        <Calendar size={20} />
       </button>
     </div>
   );
@@ -301,7 +573,7 @@ const SectionView = ({ node, level = 0 }) => {
 const WBSVisual = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandAll, setExpandAll] = useState(false);
-  const [currentView, setCurrentView] = useState('diagram');
+  const [currentView, setCurrentView] = useState('diagram'); // Set default view
 
   const renderNode = (node, level = 0) => {
     return (
@@ -333,16 +605,10 @@ const WBSVisual = () => {
             ))}
           </div>
         );
-      case 'grid':
-        return (
-          <div className="grid grid-cols-2 gap-4">
-            {wbsData.children?.map((section, index) => (
-              <SectionView key={index} node={section} />
-            ))}
-          </div>
-        );
       case 'diagram':
         return <DiagramView />;
+      case 'gantt':
+        return <GanttChart />;
       default:
         return null;
     }
